@@ -1,0 +1,54 @@
+<template>
+  <nav class="navbar">
+    <div class="container">
+      <router-link to="/" class="navbar-brand">TUX</router-link>
+      <div class="navbar-links">
+        <router-link to="/">Accueil</router-link>
+        <router-link to="/events">Événements</router-link>
+        <router-link to="/about">À propos</router-link>
+        <router-link to="/contact">Contact</router-link>
+        <router-link to="/login">Connexion</router-link>
+        <router-link to="/Register">Inscription</router-link>
+
+        <!-- Ajoutez d'autres liens de navigation ici -->
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+export default {
+  name: 'Navbar',
+};
+</script>
+
+<style scoped>
+.navbar {
+  background-color: #007bff;
+  padding: 1rem 0;
+  color: #ffffff;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.navbar-links a {
+  color: #ffffff;
+  margin-left: 20px;
+}
+
+.navbar-links a:hover {
+  text-decoration: underline;
+}
+</style>
