@@ -15,7 +15,7 @@ const routes = [
         component: Login,
     },
     {
-        path: '/Register',
+        path: '/register',
         name: 'Register',
         component: Register,
     },
@@ -23,7 +23,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
+    history: createWebHistory('/'),
     routes,
 });
 

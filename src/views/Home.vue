@@ -14,6 +14,7 @@
       <h2>Événements à Venir</h2>
       <div class="event-list">
         <EventCard v-for="event in events" :key="event.id" :event="event" />
+        <ListeLieux></ListeLieux>
       </div>
     </section>
 
@@ -41,10 +42,12 @@
 <script>
 import Navbar from '../components/Navbar.vue';
 import EventCard from '../components/EventCard.vue';
+import ListeLieux from "../components/Lieux.vue";
 
 export default {
   name: 'Home',
   components: {
+    ListeLieux,
     Navbar,
     EventCard,
   },
