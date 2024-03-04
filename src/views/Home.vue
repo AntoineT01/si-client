@@ -11,16 +11,17 @@
 
     <!-- Section Événements -->
     <section class="events">
-      <h2>Événements à venir</h2>
+      <h2>Événements à Venir</h2>
       <div class="event-list">
         <EventCard v-for="event in events" :key="event.id" :event="event" />
+        <ListeLieux></ListeLieux>
       </div>
     </section>
 
     <!-- Section À propos -->
     <section class="about">
       <h2>À propos de Nous</h2>
-      <p>Nous sommes les TUX, votre partenaire dans l'organisation d'événements. Notre mission est de rassembler les professionnels du secteur pour partager connaissances et innovations.</p>
+      <p>Nous sommes les TUX, votre partenaire dans l'organisation d'événements . Notre mission est de rassembler les professionnels du secteur pour partager connaissances et innovations.</p>
     </section>
 
     <!-- Section Contact -->
@@ -39,11 +40,13 @@
 import Navbar from '../components/Navbar.vue';
 import EventCard from '../components/EventCard.vue';
 import Footer from "../components/Footer.vue";
+import ListeLieux from "../components/Lieux.vue";
 
 export default {
   name: 'Home',
   components: {
     Footer,
+    ListeLieux,
     Navbar,
     EventCard,
   },
@@ -64,7 +67,6 @@ export default {
             // Plus de participants ici...
           ],
         },
-        // Ajoutez d'autres événements fictifs ici
         {
           id: 2,
           title: "Atelier de développement personnel",
