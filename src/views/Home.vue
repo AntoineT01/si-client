@@ -60,7 +60,7 @@ export default {
           endDate: "2024-05-20T17:00",
           description: "Une journée complète dédiée aux dernières tendances et innovations dans le secteur tech.",
           maxParticipants: 100,
-          location: "Salle A, 123 rue Principale",
+          location: "20 Av. Victor le Gorgeu, 29200 Brest",
           participants: [
             { id: 1, nom: 'Doe', prenom: 'John' },
             { id: 2, nom: 'Smith', prenom: 'Jane' },
@@ -74,7 +74,7 @@ export default {
           endDate: "2024-06-10T18:00",
           description: "Un atelier interactif pour apprendre à mieux se connaître et à développer son potentiel.",
           maxParticipants: 50,
-          location: "Centre de bien-être, 42 avenue des Fleurs",
+          location: "234 rue jean jaurès, 29200 Brest",
           participants: [
             { id: 3, nom: 'Brown', prenom: 'Alice' },
             { id: 4, nom: 'Johnson', prenom: 'Bob' },
@@ -88,7 +88,7 @@ export default {
           endDate: "2024-07-15T23:00",
           description: "Venez découvrir en avant-première notre dernier produit révolutionnaire.",
           maxParticipants: 150,
-          location: "Espace de coworking, 7 rue des Entrepreneurs",
+          location: "6 Av. Victor le Gorgeu, 29200 Brest",
           participants: [
             { id: 5, nom: 'Garcia', prenom: 'Carlos' },
             { id: 6, nom: 'Lopez', prenom: 'Elena' },

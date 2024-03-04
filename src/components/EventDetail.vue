@@ -35,21 +35,68 @@
       <textarea v-model="newCommentText" placeholder="Ajouter un commentaire..." class="comment-textarea"></textarea>
       <button @click="postComment" class="comment-post-btn">Commenter</button>
     </div>
+
+    <!-- Carte pour afficher l'emplacement de l'événement -->
+    <div id="event-map" style="height: 300px;"></div>
   </div>
 </template>
 
 <script>
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
 export default {
   name: 'EventDetail',
   props: {
     event: {
       type: Object,
+      default: () => ({}),
     },
   },
   data() {
     return {
       newCommentText: '',
+      map: null,
     };
+  },
+  mounted() {
+    if (this.event.location) {
+      this.initMap();
+    }
+  },
+  methods: {
+    formatCommentDate(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(date).toLocaleString('fr-FR', options);
+    },
+    postComment() {
+      console.log("Commentaire posté :", this.newCommentText);
+      this.newCommentText = '';
+    },
+    async geocodeAddress(address) {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURI(address)}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        return { lat, lon };
+      }
+      return null;
+    },
+    async initMap() {
+      const coords = await this.geocodeAddress(this.event.location);
+      if (coords) {
+        this.map = L.map('event-map').setView([coords.lat, coords.lon], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(this.map);
+
+        L.marker([coords.lat, coords.lon]).addTo(this.map)
+            .bindPopup(this.event.location)
+            .openPopup();
+      }
+    }
   },
   computed: {
     formattedStartDate() {
@@ -61,18 +108,11 @@ export default {
       return new Date(this.event.endDate).toLocaleString('fr-FR', options);
     },
   },
-  methods: {
-    formatCommentDate(date) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(date).toLocaleString('fr-FR', options);
-    },
-    postComment() {
-      // Logique pour poster un commentaire
-      // Vous devrez implémenter cette fonctionnalité en fonction de votre backend
-      console.log("Commentaire posté :", this.newCommentText);
-      this.newCommentText = ''; // Réinitialiser le champ après la soumission
-    },
-  },
+  beforeDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
 };
 </script>
 
