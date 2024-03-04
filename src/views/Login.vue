@@ -1,5 +1,7 @@
 <template>
+  <Navbar />
   <div class="login-container">
+
     <h1>Connexion</h1>
     <form @submit.prevent="login">
       <div class="form-group">
@@ -10,14 +12,26 @@
         <label for="password">Mot de passe:</label>
         <input type="password" id="password" v-model="user.password" required>
       </div>
-      <button type="submit">Se connecter</button>
+<!--        bouton avec redirection vers la page HommeConnected en type bouton et non routerlink-->
+        <button type="submit">Se connecter</button>
+        <router-link to="/homeConnected">Connexion</router-link>
+
+
     </form>
   </div>
+  <Footer />
 </template>
 
 <script>
+import Navbar from "../components/Navbar.vue";
+import Footer from "../components/Footer.vue";
+
 export default {
   name: 'Login',
+  components: {
+    Navbar,
+    Footer
+  },
   data() {
     return {
       user: {
@@ -63,6 +77,16 @@ export default {
 button {
   padding: 10px 20px;
   background-color: #3498db;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+.router-link {
+  padding: 10px 20px;
+  background-color: #3498db;
+  text-align: center;
   border: none;
   border-radius: 4px;
   color: white;

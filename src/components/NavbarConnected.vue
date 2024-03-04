@@ -1,17 +1,17 @@
 <template>
   <nav class="navbar">
     <div class="container">
-      <router-link to="/" class="navbar-brand">TUX</router-link>
+      <router-link to="/homeConnected" class="navbar-brand">TUX</router-link>
       <div class="navbar-links">
-        <router-link to="/">Accueil</router-link>
-        <router-link to="/about">À propos</router-link>
-        <router-link to="/login">Connexion</router-link>
-        <router-link to="/register">Inscription</router-link>
-<!--        <router-link to="/homeConnected">Accueil Connecté</router-link>-->
-
-
-
+        <router-link to="/homeConnected">Accueil</router-link>
+<!--        <router-link to="/about">À propos</router-link>-->
+        <router-link to="/GestionLieu">Gestion des Lieux</router-link>
+        <router-link to="/GestionEvenement">Gestion des Événements</router-link>
+        <router-link to="/GestionMembre">Gestion des Membres</router-link>
+        <router-link to="/">Déconnexion</router-link>
         <!-- Ajoutez d'autres liens de navigation ici -->
+
+
       </div>
     </div>
   </nav>

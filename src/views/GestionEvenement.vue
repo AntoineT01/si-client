@@ -1,51 +1,34 @@
 <template>
-  <div class="home">
-    <!-- Navbar -->
-    <Navbar />
-
-    <!-- Bannière principale -->
-    <section class="banner">
-      <h1>Bienvenue chez Tux & Co</h1>
-      <p>Explorer | Apprendre | Connecter</p>
-    </section>
-
+  <NavbarConnected />
+  <div class="gestionEvenement">
+    <h1>Gestion des Événements</h1>
+    <div class="add-event-button">
+      <button @click="showEvenementForm">Ajouter un Événement</button>
+    </div>
     <!-- Section Événements -->
     <section class="events">
       <h2>Événements à venir</h2>
       <div class="event-list">
-        <EventCard v-for="event in events" :key="event.id" :event="event" />
+        <EventCardGestion v-for="event in events" :key="event.id" :event="event" />
       </div>
     </section>
-
-    <!-- Section À propos -->
-    <section class="about">
-      <h2>À propos de Nous</h2>
-      <p>Nous sommes les TUX, votre partenaire dans l'organisation d'événements. Notre mission est de rassembler les professionnels du secteur pour partager connaissances et innovations.</p>
-    </section>
-
-    <!-- Section Contact -->
-    <section class="contact">
-      <h2>Contactez-nous</h2>
-      <p>Avez-vous des questions? Voulez-vous collaborer sur un événement? N'hésitez pas à nous contacter.</p>
-      <p>Email: contact@tux.com</p>
-    </section>
-
-    <!-- Pied de page -->
-    <Footer />
   </div>
+  <Footer />
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue';
-import EventCard from '../components/EventCard.vue';
-import Footer from "../components/Footer.vue";
+import NavbarConnected from '../components/NavbarConnected.vue';
+import EventCardGestion from "../components/EventCardGestion.vue";
+import Footer from '../components/Footer.vue';
+import EventCardConnected from "../components/EventCardConnected.vue";
 
 export default {
-  name: 'Home',
+  name: 'GestionEvenement',
   components: {
+    EventCardConnected,
+    NavbarConnected,
+    EventCardGestion,
     Footer,
-    Navbar,
-    EventCard,
   },
   data() {
     return {
@@ -63,6 +46,11 @@ export default {
             { id: 2, nom: 'Smith', prenom: 'Jane' },
             // Plus de participants ici...
           ],
+          comments: [
+            { id: 1, text: "Hâte de découvrir cet événement.", author: { nom: 'Doe', prenom: 'John' },date: "2024-05-20T09:00" },
+            { id: 2, text: "J'espère apprendre de nouvelles choses.", author: { nom: 'Smith', prenom: 'Jane' },date: "2024-05-01T12:30" },
+
+          ],
         },
         // Ajoutez d'autres événements fictifs ici
         {
@@ -78,6 +66,10 @@ export default {
             { id: 4, nom: 'Johnson', prenom: 'Bob' },
             // Plus de participants ici...
           ],
+          comments: [
+            { id: 1, text: "Hâte de découvrir cet atelier.", author: { nom: 'Brown', prenom: 'Alice' },date: "2024-06-01T12:00" },
+            { id: 2, text: "J'espère apprendre de nouvelles choses.", author: { nom: 'Johnson', prenom: 'Bob' },date: "2024-06-01T12:30" },
+          ],
         },
         {
           id: 3,
@@ -92,29 +84,44 @@ export default {
             { id: 6, nom: 'Lopez', prenom: 'Elena' },
             // Plus de participants ici...
           ],
+          comments: [
+            { id: 1, text: "Hâte de découvrir ce produit.", author: { nom: 'Garcia', prenom: 'Carlos' }, date: "2024-07-01T12:00"},
+            { id: 2, text: "J'espère apprendre de nouvelles choses.", author: { nom: 'Lopez', prenom: 'Elena' }, date: "2024-07-01T12:30"},
+          ],
         }
 
       ],
     };
   },
+  methods: {
+    showEvenementForm(evenement = null) {
+      this.selectedEvenement = evenement;
+      this.showForm = true;
+    },
+    editEvenement(evenement) {
+      this.selectedEvenement = evenement;
+      this.showForm = true;
+    },
+    deleteEvenement(evenementId) {
+      this.evenements = this.evenements.filter(evenement => evenement.id !== evenementId);
+    },
+    saveEvenement(evenement) {
+      this.showForm = false;
+    },
+    closeForm() {
+      this.showForm = false;
+    },
+  },
 };
 </script>
 
 <style scoped>
-/* Ajoutez ou modifiez le CSS ici pour styliser vos sections supplémentaires */
-.banner, .about, .contact {
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.events, .about, .contact {
+.gestionEvenement {
   padding: 20px;
 }
 
-footer {
-  background-color: #f8f9fa;
+.add-event-button {
   text-align: center;
-  padding: 20px;
-  margin-top: 40px;
+  margin-bottom: 20px;
 }
 </style>

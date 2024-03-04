@@ -1,5 +1,7 @@
 <template>
-  <div class="login-container">
+  <Navbar />
+  <div class="register-container">
+
     <h1>Inscription</h1>
     <form @submit.prevent="login">
       <div class="form-group">
@@ -10,14 +12,26 @@
         <label for="password">Mot de passe:</label>
         <input type="password" id="password" v-model="user.password" required>
       </div>
-      <button type="submit">Se connecter</button>
+      <div class="form-group">
+        <label for="confirmPassword">Confirmation de Mot de passe:</label>
+        <input type="confirmPassword" id="confirmPassword" v-model="user.confirmPassword" required>
+      </div>
+      <button type="submit">S'inscrire</button>
     </form>
   </div>
+  <Footer />
 </template>
 
 <script>
+import Navbar from "../components/Navbar.vue";
+import Footer from "../components/Footer.vue";
+
 export default {
-  name: 'Register',
+  name: 'Login',
+  components: {
+    Navbar,
+    Footer
+  },
   data() {
     return {
       user: {
@@ -36,7 +50,7 @@ export default {
 </script>
 
 <style>
-.login-container {
+.register-container {
   max-width: 300px;
   margin: 50px auto;
   padding: 20px;
