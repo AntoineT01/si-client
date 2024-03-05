@@ -1,78 +1,44 @@
 <template>
   <div class="event-card">
     <!-- En-tête de la carte -->
-    <div class="event-footer" v-if="!showDetails">
-      <div class="event-header">
-        <h3 class="event-title">{{ event.title }}</h3>
-        <p>Date de début : {{ formattedStartDate }}</p>
-      </div>
+    <div class="event-header" v-if="!showDetails">
+      <h3 class="event-title">{{ event.title }}</h3>
+      <p>Date de début : {{ formattedStartDate }}</p>
       <p class="event-description">{{ event.description }}</p>
-      <button @click="toggleDetails" class="event-detail-btn">Détails</button>
-      <button @click="showConfirmationDialogSuppr = true" class="event-delete-btn">Supprimer</button>
-      <button @click="showConfirmationDialogModif = true" class="event-edit-btn">Modifier</button>
-
+      <button @click="toggleDetails">Détails</button>
+      <button @click="$emit('deleteEvent', event.id)">Supprimer</button>
+      <button @click="$emit('editEvent', event)">Modifier</button>
     </div>
-
-
     <!-- Détails de l'événement -->
     <div v-if="showDetails" class="event-detail-container">
       <EventDetail :event="event" />
       <button @click="toggleDetails" class="close-detail-btn">✕</button>
-
-      <button @click="showConfirmationDialog = true" class="event-register-btn">S'inscrire</button>
-      <button @click="showConfirmationDialogSuppr = true" class="event-delete-btn">Supprimer</button>
-      <button @click="showConfirmationDialogModif = true" class="event-edit-btn">Modifier</button>
-      <!-- Bouton de fermeture des détails -->
-
+      <button @click="$emit('deleteEvent', event.id)">Supprimer</button>
+      <button @click="$emit('editEvent', event)">Modifier</button>
     </div>
-
-    <!-- Dialogue de confirmation intégré -->
-    <div v-if="showConfirmationDialog" class="dialog-overlay">
-      <div class="dialog">
-        <h3>Confirmation d'inscription</h3>
-        <p>Voulez-vous vraiment vous inscrire à cet événement?</p>
-        <div class="dialog-actions">
-          <button @click="registerForEvent" class="dialog-button confirm">Confirmer</button>
-          <button @click="cancelRegistration" class="dialog-button cancel">Annuler</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dialogue de confirmation intégré suppression -->
-    <div v-if="showConfirmationDialogSuppr" class="dialog-overlay">
-      <div class="dialog">
-        <h3>Confirmation de suppression</h3>
-        <p>Voulez-vous vraiment supprimer cet événement?</p>
-        <div class="dialog-actions">
-          <button @click="deleteEvent" class="dialog-button confirm">Confirmer</button>
-          <button @click="cancelDelete" class="dialog-button cancel">Annuler</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 
 <script>
-import EventDetail from './EventDetail.vue';
+import EventDetail from './EventDetailGestion.vue';
 
 export default {
-  name: 'EventCardConnected',
+  name: 'EventCardGestion',
   components: {
     EventDetail,
   },
   props: {
-    event: {
-      type: Object,
-      required: true,
-    },
+    event: Object,
   },
   data() {
     return {
       showDetails: false,
-      showConfirmationDialog: false,
-      showConfirmationDialogSuppr: false,
     };
+  },
+  methods: {
+    toggleDetails() {
+      this.showDetails = !this.showDetails;
+    },
   },
   computed: {
     formattedStartDate() {
@@ -80,28 +46,8 @@ export default {
       return new Date(this.event.startDate).toLocaleString('fr-FR', options);
     },
   },
-  methods: {
-    toggleDetails() {
-      this.showDetails = !this.showDetails;
-    },
-    registerForEvent() {
-      console.log(`Registered for ${this.event.title}`);
-      this.showConfirmationDialog = false;
-    },
-    cancelRegistration() {
-      this.showConfirmationDialog = false;
-    },
-    deleteEvent() {
-      console.log(`Deleted event: ${this.event.title}`);
-      this.showConfirmationDialogSuppr = false;
-    },
-    cancelDelete() {
-      this.showConfirmationDialogSuppr = false;
-    },
-  },
 };
 </script>
-
 <style scoped>
 .event-card {
   display: flex;
@@ -167,3 +113,4 @@ export default {
   color: white;
 }
 </style>
+
