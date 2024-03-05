@@ -1,11 +1,11 @@
 <template>
   <div class="event-detail">
     <!-- Détails de l'événement -->
-    <h2>{{ event.title }}</h2>
+    <h2>{{ event.nom }}</h2>
     <p><strong>Date de début :</strong> {{ formattedStartDate }}</p>
     <p><strong>Date de fin :</strong> {{ formattedEndDate }}</p>
     <p><strong>Description :</strong> {{ event.description }}</p>
-    <p><strong>Nombre maximum de participants :</strong> {{ event.maxParticipants }}</p>
+    <p><strong>Nombre maximum de participants :</strong> {{ event.maxParticipant }}</p>
     <p><strong>Nombre de participants inscrits :</strong> {{ event.participants.length }}</p>
     <p><strong>Lieu :</strong> {{ event.location }}</p>
 
@@ -22,10 +22,10 @@
     <div class="comments-section">
       <div v-for="comment in event.comments" :key="comment.id" class="comment-bubble">
         <div class="comment-content">
-          <strong>{{ comment.author.nom }} {{ comment.author.prenom }}:</strong> {{ comment.text }}
+          <strong>{{ comment.auteur.nom }} {{ comment.auteur.prenom }}:</strong> {{ comment.texte }}
         </div>
         <div class="comment-date">
-          {{ formatCommentDate(comment.date) }}
+          {{ formatCommentDate(comment.dateMessage) }}
         </div>
       </div>
     </div>
@@ -101,11 +101,11 @@ export default {
   computed: {
     formattedStartDate() {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-      return new Date(this.event.startDate).toLocaleString('fr-FR', options);
+      return new Date(this.event.dateHeureDebut ).toLocaleString('fr-FR', options);
     },
     formattedEndDate() {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-      return new Date(this.event.endDate).toLocaleString('fr-FR', options);
+      return new Date(this.event.dateHeureFin).toLocaleString('fr-FR', options);
     },
   },
   beforeDestroy() {
@@ -165,5 +165,8 @@ export default {
   font-size: 0.8em;
   text-align: right;
   color: #888;
+}
+event-map{
+  z-index: 0;
 }
 </style>

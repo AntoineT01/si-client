@@ -55,12 +55,12 @@ export default {
       events: [
         {
           id: 1,
-          title: "Conférence sur l'innovation technologique",
+          nom: "Conférence sur l'innovation technologique",
           startDate: "2024-05-20T09:00",
-          endDate: "2024-05-20T17:00",
+          dateHeureFin: "2024-05-20T17:00",
           description: "Une journée complète dédiée aux dernières tendances et innovations dans le secteur tech.",
-          maxParticipants: 100,
-          location: "20 Av. Victor le Gorgeu, 29200 Brest",
+          maxParticipant: 100,
+          location: "20 Av. Victor le Gorgeu, 29200 Brest", // remplacer par l'id du lieu : lieuId
           participants: [
             { id: 1, nom: 'Doe', prenom: 'John' },
             { id: 2, nom: 'Smith', prenom: 'Jane' },
@@ -69,32 +69,19 @@ export default {
         },
         {
           id: 2,
-          title: "Atelier de développement personnel",
-          startDate: "2024-06-10T14:00",
-          endDate: "2024-06-10T18:00",
-          description: "Un atelier interactif pour apprendre à mieux se connaître et à développer son potentiel.",
-          maxParticipants: 50,
-          location: "234 rue jean jaurès, 29200 Brest",
+          nom: "Séminaire sur le développement durable",
+          startDate: "2024-06-15T09:00",
+          dateHeureFin: "2024-06-15T17:00",
+          description: "Une journée complète dédiée aux dernières tendances et innovations dans le secteur tech.",
+          maxParticipant: 50,
+          location: "30 Av. Victor le Gorgeu, 29200 Brest", // remplacer par l'id du lieu : lieuId
           participants: [
-            { id: 3, nom: 'Brown', prenom: 'Alice' },
-            { id: 4, nom: 'Johnson', prenom: 'Bob' },
+            { id: 3, nom: 'Doe', prenom: 'John' },
+            { id: 4, nom: 'Smith', prenom: 'Jane' },
             // Plus de participants ici...
           ],
         },
-        {
-          id: 3,
-          title: "Soirée de lancement de produit",
-          startDate: "2024-07-15T18:00",
-          endDate: "2024-07-15T23:00",
-          description: "Venez découvrir en avant-première notre dernier produit révolutionnaire.",
-          maxParticipants: 150,
-          location: "6 Av. Victor le Gorgeu, 29200 Brest",
-          participants: [
-            { id: 5, nom: 'Garcia', prenom: 'Carlos' },
-            { id: 6, nom: 'Lopez', prenom: 'Elena' },
-            // Plus de participants ici...
-          ],
-        }
+
 
       ],
     };

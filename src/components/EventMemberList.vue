@@ -3,7 +3,7 @@
     <h3>Événements Inscrits</h3>
     <ul>
       <li v-for="event in memberEvents" :key="event.id">
-        {{ event.nom }} - {{ formatDate(event.dateHeureDebut) }} - {{ event.lieu }}
+        {{ event.nom }} - {{ formatDate(event.dateHeureDebut ) }} - {{ event.lieu }}
         <button @click="unsubscribeFromEvent(event.id)">Se désinscrire</button>
       </li>
     </ul>

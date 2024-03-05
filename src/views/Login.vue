@@ -10,7 +10,7 @@
       </div>
       <div class="form-group">
         <label for="password">Mot de passe:</label>
-        <input type="password" id="password" v-model="user.password" required>
+        <input type="password" id="password" v-model="user.motDePasse" required>
       </div>
 <!--        bouton avec redirection vers la page HommeConnected en type bouton et non routerlink-->
         <button type="submit">Se connecter</button>
@@ -36,7 +36,7 @@ export default {
     return {
       user: {
         email: '',
-        password: '',
+        motDePasse: '',
       },
     };
   },

@@ -75,8 +75,8 @@ export default {
             // Plus de participants ici...
           ],
           comments: [
-            { id: 1, text: "Hâte de découvrir cet événement.", author: { nom: 'Doe', prenom: 'John' },date: "2024-05-20T09:00" },
-            { id: 2, text: "J'espère apprendre de nouvelles choses.", author: { nom: 'Smith', prenom: 'Jane' },date: "2024-05-01T12:30" },
+            { id: 1, texte: "Hâte de découvrir cet événement.", auteur: {id:'1', nom: 'Doe', prenom: 'John' },dateMessage: "2024-05-20T09:00" },
+            { id: 2, texte: "J'espère apprendre de nouvelles choses.", auteur: {id:'2', nom: 'Smith', prenom: 'Jane' },dateMessage: "2024-05-01T12:30" },
           ],
         },
       ],

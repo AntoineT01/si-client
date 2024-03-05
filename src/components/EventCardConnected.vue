@@ -3,7 +3,7 @@
     <!-- En-tête de la carte -->
     <div class="event-footer" v-if="!showDetails">
       <div class="event-header">
-        <h3 class="event-title">{{ event.title }}</h3>
+        <h3 class="event-title">{{ event.nom }}</h3>
         <p>Date de début : {{ formattedStartDate }}</p>
       </div>
       <p class="event-description">{{ event.description }}</p>
@@ -60,7 +60,7 @@ export default {
   computed: {
     formattedStartDate() {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-      return new Date(this.event.startDate).toLocaleString('fr-FR', options);
+      return new Date(this.event.dateHeureDebut).toLocaleString('fr-FR', options);
     },
   },
   methods: {
@@ -68,7 +68,7 @@ export default {
       this.showDetails = !this.showDetails;
     },
     registerForEvent() {
-      console.log(`Registered for ${this.event.title}`);
+      console.log(`Registered for ${this.event.nom}`);
       this.showConfirmationDialog = false;
     },
     cancelRegistration() {
@@ -116,6 +116,7 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
 }
 .dialog {
   background: white;
