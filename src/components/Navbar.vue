@@ -8,10 +8,6 @@
         <router-link to="/about">À propos</router-link>
         <router-link to="/login">Connexion</router-link>
         <router-link to="/register">Inscription</router-link>
-<!--        <router-link to="/homeConnected">Accueil Connecté</router-link>-->
-
-
-        <router-link to="/register">Inscription</router-link>
 
         <!-- Ajoutez d'autres liens de navigation ici -->
       </div>
