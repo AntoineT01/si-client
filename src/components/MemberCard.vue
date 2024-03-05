@@ -6,12 +6,18 @@
     <p>Email: {{ member.email }}</p>
     <button @click="$emit('editMember', member)">Modifier</button>
     <button @click="$emit('deleteMember', member.id)">Supprimer</button>
+    <EventMemberList :memberId="member.id" />
   </div>
 </template>
 
 <script>
+import EventMemberList from './EventMemberList.vue';
+
 export default {
   name: 'MembreCard',
+  components: {
+    EventMemberList,
+  },
   props: {
     member: {
       type: Object,
