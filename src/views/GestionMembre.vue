@@ -1,68 +1,99 @@
 <template>
-  <Navbar />
-  <div class="gestion-membre">
+  <NavbarConnected/>
+  <div class="gestionMembres">
     <h1>Gestion des Membres</h1>
-    <MembersList :members="members" @editMember="editMember" @deleteMember="deleteMember" />
-    <!-- Vous pouvez ajouter ici un bouton ou un lien pour ouvrir le formulaire d'ajout d'un nouveau membre -->
-    <button @click="showAddMemberForm">Ajouter un nouveau membre</button>
-    <!-- MemberForm pourrait être conditionnellement rendu ici, basé sur un flag dans les données -->
-    <MemberForm v-if="showForm" @saveMember="saveMember" :member="selectedMember" />
+    <div class="add-member-button">
+      <button @click="CreateMemberForm">Ajouter un Membre</button>
+    </div>
+
+    <!-- Formulaire de création de membre -->
+    <CreateMemberForm v-if="showCreateMemberForm" @closeForm="closeForm" @saveMember="saveMember"
+                      :member="selectedMember"/>
+    <EditMemberForm v-if="showEditMemberForm" @closeForm="closeForm" @saveMember="saveMember" :member="selectedMember"/>
+    <!-- Liste des membres -->
+    <section class="members">
+      <h2>Liste des Membres</h2>
+      <div class="member-list">
+        <MembreCard v-for="member in members" :key="member.id" :member="member" @editMember="editMember"  @deleteMember="deleteMember"
+        />
+      </div>
+    </section>
   </div>
+  <Footer/>
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue';
-import MembersList from '../components/MembersList.vue';
-import MemberForm from '../components/MemberForm.vue';
-import EventCard from "../components/EventCard.vue";
+import NavbarConnected from '../components/NavbarConnected.vue';
+import MembreCard from "../components/MemberCard.vue";
+import CreateMemberForm from "../components/CreateMemberForm.vue";
+import EditMemberForm from "../components/EditMemberForm.vue";
+import Footer from '../components/Footer.vue';
 
-// Importez votre composant MemberForm ici si vous en avez un
-// import MemberForm from './MemberForm.vue';
 
 export default {
-  name: 'GestionMembre',
+  name: 'GestionMembres',
   components: {
-    Navbar,
-    MembersList,
-    // MemberForm,
+    EditMemberForm,
+    NavbarConnected,
+    MembreCard,
+    CreateMemberForm,
+    Footer,
   },
-
   data() {
     return {
       members: [
-        { id: 1, nom: 'Doe', prenom: 'John', age: 28, adresse: '123 Rue Principale, Ville' },
-        { id: 2, nom: 'Smith', prenom: 'Jane', age: 32, adresse: '456 Avenue Secondaire, Ville' },
+        // Ici, vous devriez charger les données des membres depuis votre backend ou BDD
+        {id: 1, nom: 'Doe', prenom: 'John', dateNaissance: '1980-01-01', adresse: '123 Rue Principale', email: 'john.doe@example.com', motDePasse: 'password123'},
+        {id: 2, nom: 'Smith', prenom: 'Jane', dateNaissance: '1990-02-02', adresse: '456 Rue Secondaire', email: 'jane.smith@example.com', motDePasse: 'password456'},
+        // Plus de membres ici...
       ],
-      showForm: false,
+      showCreateMemberForm: false,
+      showEditMemberForm: false,
       selectedMember: null,
     };
   },
   methods: {
-    showAddMemberForm() {
-      this.selectedMember = null; // Réinitialiser le membre sélectionné pour le formulaire d'ajout
-      this.showForm = true;
+    CreateMemberForm() {
+      this.showEditMemberForm = false;
+      this.showCreateMemberForm = true;
     },
-    editMember(id) {
-      this.selectedMember = this.members.find(member => member.id === id);
-      this.showForm = true;
+    editMember(member) {
+      this.showCreateMemberForm = false;
+      this.selectedMember = member;
+      this.showEditMemberForm = true;
+
     },
-    deleteMember(id) {
-      this.members = this.members.filter(member => member.id !== id);
+    deleteMember(memberId) {
+      // Logique pour supprimer le membre
+      this.showEditMemberForm = false;
+      this.members = this.members.filter(member => member.id !== memberId);
     },
     saveMember(member) {
-      if (member.id) {
-        // Logique pour mettre à jour un membre existant
-      } else {
-        // Logique pour ajouter un nouveau membre
-      }
-      this.showForm = false;
-    }
-  }
+      // Logique pour sauvegarder le membre dans la BDD
+      console.log('Sauvegarder le membre', member);
+      this.closeForm();
+    },
+    closeForm() {
+      this.showCreateMemberForm = false;
+      this.showEditMemberForm = false;
+    },
+  },
 };
 </script>
 
-<style scoped>
-.gestion-membre {
-  /* Styles de votre choix ici */
+<style>
+.gestionMembres {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.add-member-button {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.members {
+  padding: 20px;
 }
 </style>
