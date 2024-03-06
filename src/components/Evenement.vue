@@ -3,7 +3,7 @@
     <h1>Liste des Evenements</h1>
     <ul>
       <li v-for="evenement in evenements" :key="evenement.id">
-        <h3>{{ evenement.title }}</h3>
+        <h3>{{ evenement.titre }}</h3>
       </li>
     </ul>
   </div>

@@ -95,7 +95,7 @@ export default {
           .then(response => {
             const evenements = response.data;
             return Promise.all(evenements.map(evenement => {
-              return axios.get(`http://localhost:8085/lieu/${evenement.lieuId}`)
+              return axios.get(`http://localhost:8085/lieux/${evenement.lieuId}`)
                   .then(response => {
                     evenement.lieu = response.data;
                     return evenement;
