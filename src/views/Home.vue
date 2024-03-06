@@ -17,6 +17,7 @@
         <ListeLieux></ListeLieux>
         <Commentaires></Commentaires>
         <Membres></Membres>
+        <Evenement></Evenement>
       </div>
     </section>
 
@@ -45,6 +46,7 @@ import Footer from "../components/Footer.vue";
 import Commentaires from "../components/Commentaire.vue";
 import Membres from "../components/Membres.vue";
 import ListeLieux from "../components/Lieux.vue";
+import Evenement from "../components/Evenement.vue";
 
 export default {
   name: 'Home',
@@ -55,6 +57,7 @@ export default {
     EventCard,
     Commentaires,
     Membres,
+    Evenement,
   },
 
   mounted() {
