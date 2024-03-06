@@ -23,6 +23,8 @@ export default {
   },
   created() {
     this.fetchLieux();
+    this.fetchComments(1);
+
   },
   methods: {
     fetchLieux() {
@@ -33,7 +35,16 @@ export default {
           .catch(error => {
             console.error("Il y a eu un problème avec la requête de l'API :", error);
           });
-    }
+    },
+    fetchComments(eventId) {
+      axios.get(`http://localhost:8085/commentaire/evenement/${eventId}`)
+          .then(response => {
+            this.comments = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
   }
 }
 </script>
