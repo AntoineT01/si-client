@@ -12,8 +12,8 @@
       </div>
 
       <div class="form-group">
-        <label for="capacite">Capacité d'accueil:</label>
-        <input id="capacite" v-model="lieu.capaciteAccueil" type="number" min="0" required>
+        <label for="capaciteAccueil">Capacité d'accueil:</label>
+        <input id="capaciteAccueil" v-model="lieu.capaciteAccueil" type="number" min="0" required>
       </div>
 
       <button type="submit" class="submit-btn">Ajouter / modifier</button>
