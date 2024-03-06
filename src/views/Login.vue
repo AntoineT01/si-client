@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar/>
   <div class="login-container">
 
     <h1>Connexion</h1>
@@ -12,19 +12,19 @@
         <label for="password">Mot de passe:</label>
         <input type="password" id="password" v-model="user.motDePasse" required>
       </div>
-<!--        bouton avec redirection vers la page HommeConnected en type bouton et non routerlink-->
-        <button type="submit">Se connecter</button>
-        <router-link to="/homeConnected">Connexion</router-link>
-
+      <!--        bouton avec redirection vers la page HommeConnected en type bouton et non routerlink-->
+      <button type="submit">Se connecter</button>
+      <router-link to="/homeConnected">Connexion</router-link>
 
     </form>
   </div>
-  <Footer />
+  <Footer/>
 </template>
 
 <script>
 import Navbar from "../components/Navbar.vue";
 import Footer from "../components/Footer.vue";
+import axios from "axios";
 
 export default {
   name: 'Login',
@@ -38,12 +38,32 @@ export default {
         email: '',
         motDePasse: '',
       },
+      membres: [],
     };
   },
   methods: {
-    login() {
-      // Logique de connexion sera ajoutée plus tard
-      alert('Logique de connexion à implémenter.');
+    async login() {
+      await axios.get("http://localhost:8085/membres")
+          .then(response => {
+            this.membres = response.data;
+            let estConnecte = false;
+
+            for (let i = 0; i < this.membres.length; i++) {
+              if (this.membres[i].mail === this.user.email && this.membres[i].motDePasse === this.user.motDePasse) {
+                localStorage.setItem('membreId', this.membres[i].id);
+                estConnecte = true;
+                this.$router.push('/homeConnected'); // Redirection vers la page souhaitée
+                return; // Pour arrêter la boucle et la fonction après la réussite de la connexion
+              }
+            }
+
+            if (!estConnecte) {
+              alert('E-mail ou mot de passe incorrect');
+            }
+          })
+          .catch(error => {
+            console.error("Il y a eu un problème avec la requête de l'API :", error);
+          });
     },
   },
 };
@@ -83,6 +103,7 @@ button {
   color: white;
   cursor: pointer;
 }
+
 .router-link {
   padding: 10px 20px;
   background-color: #3498db;

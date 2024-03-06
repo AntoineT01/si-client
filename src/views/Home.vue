@@ -87,8 +87,6 @@ export default {
             // Plus de participants ici...
           ],
         },
-
-
       ],
     };
   },
