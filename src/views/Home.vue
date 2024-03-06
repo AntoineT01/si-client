@@ -13,7 +13,7 @@
     <section class="events">
       <h2>Évènements à Venir</h2>
       <div class="event-list">
-        <EventCard v-for="event in evenements" :key="event.id" :event="event"/>
+        <EventCard v-for="event in events" :key="event.id" :event="event" />
         <ListeLieux></ListeLieux>
         <Commentaires></Commentaires>
         <Membres></Membres>
@@ -23,8 +23,7 @@
     <!-- Section À propos -->
     <section class="about">
       <h2>À propos de Nous</h2>
-      <p>Nous sommes les TUX, votre partenaire dans l'organisation d'événements . Notre mission est de rassembler les
-        professionnels du secteur pour partager connaissances et innovations.</p>
+      <p>Nous sommes les TUX, votre partenaire dans l'organisation d'événements . Notre mission est de rassembler les professionnels du secteur pour partager connaissances et innovations.</p>
     </section>
 
     <!-- Section Contact -->
@@ -57,6 +56,12 @@ export default {
     EventCard,
     Commentaires,
     Membres,
+  },
+
+  mounted() {
+    if (localStorage.getItem('membreId')) {
+      this.$router.push('/homeConnected');
+    }
   },
   data() {
     return {

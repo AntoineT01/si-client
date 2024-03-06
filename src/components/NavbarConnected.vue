@@ -8,7 +8,8 @@
         <router-link to="/GestionLieu">Gestion des Lieux</router-link>
         <router-link to="/GestionEvenement">Gestion des Événements</router-link>
         <router-link to="/GestionMembre">Gestion des Membres</router-link>
-        <router-link to="/">Déconnexion</router-link>
+        <button @click="logout">Déconnexion</button>
+<!--        <router-link to="/">Déconnexion</router-link>-->
         <!-- Ajoutez d'autres liens de navigation ici -->
 
 
@@ -20,6 +21,12 @@
 <script>
 export default {
   name: 'Navbar',
+  methods: {
+    logout() {
+      localStorage.removeItem('membreId');
+      this.$router.push('/');
+    }
+  }
 };
 </script>
 
