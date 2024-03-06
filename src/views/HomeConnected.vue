@@ -44,11 +44,6 @@ export default {
             { id: 2, nom: 'Smith', prenom: 'Jane' },
             // Plus de participants ici...
           ],
-          comments: [
-            { id: 1, texte: "Hâte de découvrir cet événement.", auteur: {id:'1', nom: 'Doe', prenom: 'John' },dateMessage: "2024-05-20T09:00" },
-            { id: 2, texte: "J'espère apprendre de nouvelles choses.", auteur: {id:'2', nom: 'Smith', prenom: 'Jane' },dateMessage: "2024-05-01T12:30" },
-
-          ],
         },
         // Ajoutez d'autres événements fictifs ici
         {
@@ -63,11 +58,6 @@ export default {
             { id: 3, nom: 'Doe', prenom: 'John' },
             { id: 4, nom: 'Smith', prenom: 'Jane' },
             // Plus de participants ici...
-          ],
-          comments: [
-            { id: 3, texte: "Hâte de découvrir cet événement.", auteur: {id:'3', nom: 'Doe', prenom: 'John' },dateMessage: "2024-06-15T09:00" },
-            { id: 4, texte: "J'espère apprendre de nouvelles choses.", auteur: {id:'4', nom: 'Smith', prenom: 'Jane' },dateMessage: "2024-06-01T12:30" },
-
           ],
         },
 
