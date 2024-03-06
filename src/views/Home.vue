@@ -11,10 +11,12 @@
 
     <!-- Section Événements -->
     <section class="events">
-      <h2>Événements à Venir</h2>
+      <h2>Évènements à Venir</h2>
       <div class="event-list">
         <EventCard v-for="event in events" :key="event.id" :event="event" />
         <ListeLieux></ListeLieux>
+        <Commentaires></Commentaires>
+        <Membres></Membres>
       </div>
     </section>
 
@@ -40,6 +42,8 @@
 import Navbar from '../components/Navbar.vue';
 import EventCard from '../components/EventCard.vue';
 import Footer from "../components/Footer.vue";
+import Commentaires from "../components/Commentaire.vue";
+import Membres from "../components/Membres.vue";
 import ListeLieux from "../components/Lieux.vue";
 
 export default {
@@ -49,6 +53,8 @@ export default {
     ListeLieux,
     Navbar,
     EventCard,
+    Commentaires,
+    Membres,
   },
   data() {
     return {

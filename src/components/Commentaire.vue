@@ -1,11 +1,9 @@
 <template>
   <div>
-    <h1>Liste des Lieux</h1>
+    <h1>Liste des commentaires</h1>
     <ul>
-      <li v-for="lieu in lieux" :key="lieu.id">
-        <h2>{{ lieu.nom }}</h2>
-        <p>Adresse: {{ lieu.adresse }}</p>
-        <p>Capacité d'accueil: {{ lieu.capaciteAccueil }}</p>
+      <li v-for="commentaire in commentaires" :key="commentaire.id">
+        <h2>{{ commentaire.texte }}</h2>
       </li>
     </ul>
   </div>
@@ -15,20 +13,20 @@
 import axios from 'axios';
 
 export default {
-  name: 'ListeLieux',
+  name: 'Commentaire',
   data() {
     return {
-      lieux: [],
+      commentaires: [],
     };
   },
   created() {
-    this.fetchLieux();
+    this.fetchCommentaire();
   },
   methods: {
-    fetchLieux() {
-      axios.get('http://localhost:8085/lieux')
+    fetchCommentaire() {
+      axios.get('http://localhost:8085/commentaire')
           .then(response => {
-            this.lieux = response.data;
+            this.commentaires = response.data;
           })
           .catch(error => {
             console.error("Il y a eu un problème avec la requête de l'API :", error);
