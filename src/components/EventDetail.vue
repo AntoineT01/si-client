@@ -20,12 +20,12 @@
     <!-- Section des commentaires -->
     <h3>Commentaires :</h3>
     <div class="comments-section">
-      <div v-for="comment in event.comments" :key="comment.id" class="comment-bubble">
+      <div v-for="commentaire in commentaires" :key="index" class="comment-bubble">
         <div class="comment-content">
-          <strong>{{ comment.auteur.nom }} {{ comment.auteur.prenom }}:</strong> {{ comment.texte }}
+          <strong>{{ commentaire.auteur.nom }}{{ commentaires.auteur.prenom  }}:</strong> {{ commentaire.texte }}
         </div>
         <div class="comment-date">
-          {{ formatCommentDate(comment.dateMessage) }}
+          {{ formatCommentDate(commentaire.dateMessage) }}
         </div>
       </div>
     </div>
@@ -44,6 +44,7 @@
 <script>
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import axios from "axios";
 
 export default {
   name: 'EventDetail',
@@ -57,6 +58,7 @@ export default {
     return {
       newCommentText: '',
       map: null,
+      commentaires: []
     };
   },
   mounted() {
@@ -66,7 +68,7 @@ export default {
   },
   methods: {
     formatCommentDate(date) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const options = {year: 'numeric', month: 'long', day: 'numeric'};
       return new Date(date).toLocaleString('fr-FR', options);
     },
     postComment() {
@@ -78,8 +80,8 @@ export default {
       const response = await fetch(url);
       const data = await response.json();
       if (data.length > 0) {
-        const { lat, lon } = data[0];
-        return { lat, lon };
+        const {lat, lon} = data[0];
+        return {lat, lon};
       }
       return null;
     },
@@ -96,15 +98,48 @@ export default {
             .bindPopup(this.event.location)
             .openPopup();
       }
-    }
+    },
+    // fetchComments(eventId) {
+    //   axios.get(`http://localhost:8085/commentaire/evenement/${eventId}`)
+    //       .then(response => {
+    //         console.log(response.data); // Ajoutez cette ligne pour déboguer
+    //         this.commentaires = response.data;
+    //       })
+    //       .catch(error => {
+    //         console.error(error);
+    //       });
+    // },
+    fetchComments(eventId) {
+      axios.get(`http://localhost:8085/commentaire/evenement/${eventId}`)
+          .then(response => {
+            const commentaires = response.data;
+            return Promise.all(commentaires.map(commentaire => {
+              return axios.get(`http://localhost:8085/membres/${commentaire.auteurId}`)
+                  .then(response => {
+                    commentaire.auteur = response.data;
+                    return commentaire;
+                  });
+            }));
+          })
+          .then(commentairesAvecAuteurs => {
+            this.commentaires = commentairesAvecAuteurs;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
+
+  },
+  created() {
+    this.fetchComments(this.event.id);
   },
   computed: {
     formattedStartDate() {
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-      return new Date(this.event.dateHeureDebut ).toLocaleString('fr-FR', options);
+      const options = {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+      return new Date(this.event.dateHeureDebut).toLocaleString('fr-FR', options);
     },
     formattedEndDate() {
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const options = {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'};
       return new Date(this.event.dateHeureFin).toLocaleString('fr-FR', options);
     },
   },
@@ -136,6 +171,7 @@ export default {
   border: none;
   cursor: pointer;
 }
+
 .comment-form {
   margin-top: 20px;
 }
@@ -149,6 +185,7 @@ export default {
 .comment-form button {
   padding: 5px 15px;
 }
+
 .comment-bubble {
   background-color: #f4f4f8;
   border-radius: 15px;
@@ -166,7 +203,8 @@ export default {
   text-align: right;
   color: #888;
 }
-event-map{
+
+#event-map {
   z-index: 0;
 }
 </style>
