@@ -32,6 +32,11 @@ export default {
     Navbar,
     Footer
   },
+  mounted() {
+    if (localStorage.getItem('membreId')) {
+      this.$router.push('/homeConnected');
+    }
+  },
   data() {
     return {
       user: {

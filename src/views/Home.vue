@@ -56,6 +56,12 @@ export default {
     Commentaires,
     Membres,
   },
+
+  mounted() {
+    if (localStorage.getItem('membreId')) {
+      this.$router.push('/homeConnected');
+    }
+  },
   data() {
     return {
       events: [
