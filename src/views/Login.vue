@@ -14,7 +14,6 @@
       </div>
       <!--        bouton avec redirection vers la page HommeConnected en type bouton et non routerlink-->
       <button type="submit">Se connecter</button>
-      <router-link to="/homeConnected">Connexion</router-link>
 
     </form>
   </div>

@@ -4,10 +4,9 @@
       <router-link to="/" class="navbar-brand">TUX</router-link>
       <div class="navbar-links">
         <router-link to="/">Accueil</router-link>
-        <router-link to="/events">Événements</router-link>
         <router-link to="/about">À propos</router-link>
         <router-link to="/login">Connexion</router-link>
-        <router-link to="/register">Inscription</router-link>
+<!--        <router-link to="/register">Inscription</router-link>-->
 
         <!-- Ajoutez d'autres liens de navigation ici -->
       </div>
