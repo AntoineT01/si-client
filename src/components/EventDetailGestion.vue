@@ -27,27 +27,22 @@
         <div class="comment-date">
           {{ formatCommentDate(commentaire.dateMessage) }}
         </div>
-        <button @click="prepareDeleteComment(comment.id)" class="comment-delete-btn">Supprimer</button>
-        <button @click="prepareModifyComment(comment.id)" class="comment-modify-btn">Modifier</button>
+        <button @click="prepareDeleteComment(commentaire)" class="comment-delete-btn">Supprimer</button>
+<!--        <button @click="prepareModifyComment(commentaire.id)" class="comment-modify-btn">Modifier</button>-->
       </div>
     </div>
 
-    <div id="event-map" style="height: 300px;"></div>
-
-
-    <!-- Pop-up de confirmation de suppression -->
-      <div v-if="showConfirmationDialogSuppr" class="modal-overlay" @click.self="cancelDelete">
-        <div class="modal">
-          <h3>Confirmation de suppression</h3>
-          <p>Voulez-vous vraiment supprimer ce commentaire?</p>
-          <div class="modal-actions">
-            <button @click="deleteComment" class="modal-button confirm">Confirmer</button>
-            <button @click="cancelDelete" class="modal-button cancel">Annuler</button>
-          </div>
+    <div v-if="showConfirmationDialogSuppr" class="dialog-overlay" @click.self="cancelDelete">
+      <div class="dialog">
+        <h3>Confirmation de suppression</h3>
+        <p>Voulez-vous vraiment supprimer ce commentaire?</p>
+        <p><strong>Commentaire :</strong> {{ commentToDelete.texte }}</p>
+        <div class="dialog-actions">
+          <button @click="deleteComment(commentToDelete.id)" class="dialog-button confirm">Confirmer</button>
+          <button @click="cancelDelete" class="dialog-button cancel">Annuler</button>
         </div>
       </div>
-
-
+    </div>
     <!-- Carte pour afficher l'emplacement de l'événement -->
     <div id="event-map" style="height: 300px;"></div>
   </div>
@@ -168,14 +163,29 @@ export default {
 
       L.marker([this.latitude, this.longitude], {icon: icon}).addTo(this.map);
     },
-    prepareDeleteComment(commentId) {
-      this.commentToDelete = commentId;
+    prepareDeleteComment(commentaire) {
+      this.commentToDelete = commentaire;
       this.showConfirmationDialogSuppr = true;
     },
-    deleteComment() {
-      console.log(`Suppression du commentaire ID: ${this.commentToDelete}`);
-      // Logique de suppression du commentaire
+    async deleteComment(commentId) {
+      // Préparez l'URL de l'API
+      const url = `http://localhost:8085/commentaire/${commentId}`;
+
+      // Appeler l'API pour supprimer le commentaire
+      try {
+        await axios.delete(url);
+        alert('Votre commentaire a été supprimé.');
+
+        // Mettre à jour la liste des commentaires
+        this.fetchComments(this.event.id);
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors de la suppression du commentaire.');
+      }
+
+      // Fermer le pop-up
       this.showConfirmationDialogSuppr = false;
+      this.commentToDelete = null;
     },
     cancelDelete() {
       this.showConfirmationDialogSuppr = false;
@@ -230,4 +240,41 @@ export default {
   color: #888;
 }
 
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+}
+.dialog {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+.dialog-actions {
+  margin-top: 20px;
+}
+.dialog-button {
+  margin: 0 10px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirm {
+  background-color: #4CAF50;
+  color: white;
+}
+.cancel {
+  background-color: #f44336;
+  color: white;
+}
 </style>
