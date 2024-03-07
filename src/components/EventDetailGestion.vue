@@ -28,7 +28,7 @@
           {{ formatCommentDate(commentaire.dateMessage) }}
         </div>
         <button @click="prepareDeleteComment(commentaire)" class="comment-delete-btn">Supprimer</button>
-<!--        <button @click="prepareModifyComment(commentaire.id)" class="comment-modify-btn">Modifier</button>-->
+        <button @click="prepareModifyComment(commentaire)" class="comment-modify-btn">Modifier</button>
       </div>
     </div>
 
@@ -41,6 +41,19 @@
           <button @click="deleteComment(commentToDelete.id)" class="dialog-button confirm">Confirmer</button>
           <button @click="cancelDelete" class="dialog-button cancel">Annuler</button>
         </div>
+      </div>
+    </div>
+
+    <div v-if="showModificationDialog" class="dialog-overlay" @click.self="cancelModify">
+      <div class="dialog">
+        <h3>Modification du commentaire</h3>
+        <form @submit.prevent="modifyComment(commentToModify.id)">
+          <textarea v-model="commentToModify.texte"></textarea>
+          <div class="dialog-actions">
+            <button type="submit" class="dialog-button confirm">Confirmer</button>
+            <button @click="cancelModify" class="dialog-button cancel">Annuler</button>
+          </div>
+        </form>
       </div>
     </div>
     <!-- Carte pour afficher l'emplacement de l'événement -->
@@ -74,6 +87,8 @@ export default {
       location: [],
       showConfirmationDialogSuppr: false,
       commentToDelete: null,
+      showModificationDialog: false,
+      commentToModify: null,
     };
   },
   mounted() {
@@ -190,6 +205,36 @@ export default {
     cancelDelete() {
       this.showConfirmationDialogSuppr = false;
       this.commentToDelete = null;
+    },
+    prepareModifyComment(commentaire) {
+      // Créez une copie du commentaire pour éviter de modifier directement le commentaire original
+      this.commentToModify = commentaire;
+      console.log(this.commentToModify);
+      this.showModificationDialog = true;
+    },
+    async modifyComment(commentId) {
+      // Préparez l'URL de l'API
+      const url = `http://localhost:8085/commentaire/${commentId}`;
+
+      // Appeler l'API pour modifier le commentaire
+      try {
+        await axios.put(url, this.commentToModify);
+        alert('Votre commentaire a été modifié.');
+
+        // Mettre à jour la liste des commentaires
+        this.fetchComments(this.event.id);
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors de la modification du commentaire.');
+      }
+
+      // Fermer le pop-up
+      this.showModificationDialog = false;
+      this.commentToModify = null;
+    },
+    cancelModify() {
+      this.showModificationDialog = false;
+      this.commentToModify = null;
     },
   },
   created() {
