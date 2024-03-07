@@ -29,6 +29,12 @@
       </div>
     </div>
 
+    <!-- Formulaire pour ajouter un commentaire -->
+    <div class="comment-form">
+      <textarea v-model="newCommentText" placeholder="Ajouter un commentaire..." class="comment-textarea"></textarea>
+      <button @click="postComment" class="comment-post-btn">Commenter</button>
+    </div>
+
     <!-- Carte pour afficher l'emplacement de l'événement -->
     <div id="event-map" style="height: 300px;"></div>
 
