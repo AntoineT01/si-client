@@ -68,23 +68,7 @@ export default {
   },
   data() {
     return {
-      // events: [
-      //   {
-      //   id: 1,
-      //   nom: "Conférence sur l'innovation technologique",
-      //   startDate: "2024-05-20T09:00",
-      //   dateHeureFin: "2024-05-20T17:00",
-      //   description: "Une journée complète dédiée aux dernières tendances et innovations dans le secteur tech.",
-      //   maxParticipant: 100,
-      //   location: "20 Av. Victor le Gorgeu, 29200 Brest", // remplacer par l'id du lieu : lieuId
-      //   participants: [
-      //     { id: 1, nom: 'Doe', prenom: 'John' },
-      //     { id: 2, nom: 'Smith', prenom: 'Jane' },
-      //     // Plus de participants ici...
-      //   ],
-      // },
-      // ],
-      evenements: [],
+      events: [],
 
     };
   },
@@ -93,8 +77,9 @@ export default {
     fetchEvenements() {
       axios.get('http://localhost:8085/events')
           .then(response => {
-            const evenements = response.data;
-            return Promise.all(evenements.map(evenement => {
+            console.log(response.data);
+            const events = response.data;
+            return Promise.all(events.map(evenement => {
               return axios.get(`http://localhost:8085/lieux/${evenement.lieuId}`)
                   .then(response => {
                     evenement.lieu = response.data;
@@ -103,7 +88,7 @@ export default {
             }));
           })
           .then(evenementsAvecLieux => {
-            this.evenements = evenementsAvecLieux;
+            this.events = evenementsAvecLieux;
           })
           .catch(error => {
             console.error(error);

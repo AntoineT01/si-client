@@ -2,20 +2,27 @@
   <NavbarConnected />
   <div class="gestionLieu">
     <h1>Gestion des Lieux</h1>
+
+    <!-- Bouton pour ajouter un nouveau lieu -->
     <div class="add-lieu-button">
       <button @click="showLieuForm">Ajouter un Lieu</button>
     </div>
+
+    <!-- Formulaire pour ajouter ou éditer un lieu -->
     <LieuForm
         v-if="showForm"
         :lieu="selectedLieu"
         @saveLieu="saveOrUpdateLieu"
         @closeForm="closeForm"
     />
+    <!-- Composant pour lister tous les lieux -->
     <LieuxList
         :lieux="lieux"
         @editLieu="editLieu"
         @deleteLieu="deleteLieu"
     />
+
+    <!-- Liste des événements pour un lieu sélectionné -->
     <LieuEventsList
         v-if="selectedLieuId"
         :lieuId="selectedLieuId"
@@ -116,3 +123,4 @@ export default {
 <style scoped>
 /* Le CSS existant reste inchangé */
 </style>
+

@@ -3,7 +3,7 @@
 
     <div class="event-footer" v-if="!showDetails">
       <div class="event-header">
-        <h3 class="event-title">{{ event.nom }}</h3>
+        <h3 class="event-title">{{ event.titre }}</h3>
         <p>Date de début : {{ formattedStartDate }}</p>
       </div>
       <p class="event-description">{{ event.description }}</p>

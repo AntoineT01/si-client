@@ -1,28 +1,27 @@
 <template>
   <div class="event-detail">
     <!-- Détails de l'événement -->
-    <h2>{{ event.nom }}</h2>
+    <h2>{{ event.titre }}</h2>
     <p><strong>Date de début :</strong> {{ formattedStartDate }}</p>
     <p><strong>Date de fin :</strong> {{ formattedEndDate }}</p>
     <p><strong>Description :</strong> {{ event.description }}</p>
-    <p><strong>Nombre maximum de participants :</strong> {{ event.maxParticipant }}</p>
-    <p><strong>Nombre de participants inscrits :</strong> {{ event.participants.length }}</p>
-    <p><strong>Lieu :</strong> {{ event.location }}</p>
+    <p><strong>Nombre maximum de participants :</strong> {{ location.capaciteAccueil }}</p>
+    <p><strong>Nombre de participants :</strong> {{ participants.length }}</p>
+    <p><strong>Lieu :</strong> {{ location.nom }} - {{ location.adresse }}</p>
 
-    <!-- Liste des participants -->
     <h3>Liste des participants :</h3>
     <ul>
-      <li v-for="participant in event.participants" :key="participant.id">
+      <li v-for="participant in participants" :key="participant.id">
         {{ participant.nom }} {{ participant.prenom }}
       </li>
     </ul>
 
-    <!-- Section des commentaires -->
+    <!--     Section des commentaires-->
     <h3>Commentaires :</h3>
     <div class="comments-section">
       <div v-for="commentaire in commentaires" :key="index" class="comment-bubble">
         <div class="comment-content">
-          <strong>{{ commentaire.auteur.nom }}{{ commentaires.auteur.prenom  }}:</strong> {{ commentaire.texte }}
+          <strong>{{ commentaire.auteur.nom }}{{ commentaire.auteur.prenom }}:</strong> {{ commentaire.texte }}
         </div>
         <div class="comment-date">
           {{ formatCommentDate(commentaire.dateMessage) }}
@@ -38,6 +37,8 @@
 
     <!-- Carte pour afficher l'emplacement de l'événement -->
     <div id="event-map" style="height: 300px;"></div>
+
+
   </div>
 </template>
 
@@ -45,6 +46,9 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from "axios";
+import markerIconUrl from '../assets/marker.svg';
+import markerShadowUrl from '../assets/marker-shadow.svg';
+
 
 export default {
   name: 'EventDetail',
@@ -58,13 +62,15 @@ export default {
     return {
       newCommentText: '',
       map: null,
-      commentaires: []
+      latitude: null,
+      longitude: null,
+      commentaires: [],
+      participants: [],
+      location: [],
     };
   },
   mounted() {
-    if (this.event.location) {
-      this.initMap();
-    }
+    this.fetchLocation(this.event.id);
   },
   methods: {
     formatCommentDate(date) {
@@ -75,40 +81,8 @@ export default {
       console.log("Commentaire posté :", this.newCommentText);
       this.newCommentText = '';
     },
-    async geocodeAddress(address) {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURI(address)}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.length > 0) {
-        const {lat, lon} = data[0];
-        return {lat, lon};
-      }
-      return null;
-    },
-    async initMap() {
-      const coords = await this.geocodeAddress(this.event.location);
-      if (coords) {
-        this.map = L.map('event-map').setView([coords.lat, coords.lon], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '© OpenStreetMap contributors'
-        }).addTo(this.map);
 
-        L.marker([coords.lat, coords.lon]).addTo(this.map)
-            .bindPopup(this.event.location)
-            .openPopup();
-      }
-    },
-    // fetchComments(eventId) {
-    //   axios.get(`http://localhost:8085/commentaire/evenement/${eventId}`)
-    //       .then(response => {
-    //         console.log(response.data); // Ajoutez cette ligne pour déboguer
-    //         this.commentaires = response.data;
-    //       })
-    //       .catch(error => {
-    //         console.error(error);
-    //       });
-    // },
+
     fetchComments(eventId) {
       axios.get(`http://localhost:8085/commentaire/evenement/${eventId}`)
           .then(response => {
@@ -116,6 +90,7 @@ export default {
             return Promise.all(commentaires.map(commentaire => {
               return axios.get(`http://localhost:8085/membres/${commentaire.auteurId}`)
                   .then(response => {
+                    console.log(response.data);
                     commentaire.auteur = response.data;
                     return commentaire;
                   });
@@ -128,10 +103,71 @@ export default {
             console.error(error);
           });
     },
+    fetchParticipants(eventId) {
+      axios.get(`http://localhost:8085/events/${eventId}/membres`)
+          .then(response => {
+            this.participants = response.data;
+            console.log(response.data);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
+
+    async fetchLocation(eventId) {
+      axios.get(`http://localhost:8085/lieux/${eventId}`)
+          .then(response => {
+            this.location = response.data;
+            return this.geocodeAddress(this.location.adresse);
+          })
+          .then(coords => {
+            if (coords) {
+              this.latitude = parseFloat(coords.lat);
+              this.longitude = parseFloat(coords.lon);
+              this.initMap();
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
+    async geocodeAddress(address) {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURI(address)}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.length > 0) {
+        const {lat, lon} = data[0];
+        return {lat, lon};
+      } else {
+        console.error('Adresse non trouvée:', address);
+      }
+      return null;
+    },
+    initMap() {
+      this.map = L.map('event-map').setView([this.latitude, this.longitude], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+      }).addTo(this.map);
+
+      let icon = L.icon({
+        // récuperation de l'image dans le dossier src/assets/marker.svg
+        iconUrl: markerIconUrl ,
+        shadowUrl: markerShadowUrl ,
+        iconSize: [25, 41], // taille de l'icône
+        shadowSize: [41, 41], // taille de l'ombre
+        iconAnchor: [12, 41], // point de l'icône qui correspondra à la position du marqueur
+        shadowAnchor: [12, 41],  // point de l'ombre qui correspondra à la position de l'ombre
+        popupAnchor: [1, -34], // point à partir duquel le popup doit s'ouvrir par rapport à l'iconAnchor
+      });
+
+      L.marker([this.latitude, this.longitude], {icon: icon}).addTo(this.map);
+    },
 
   },
   created() {
     this.fetchComments(this.event.id);
+    this.fetchParticipants(this.event.id);
+    this.fetchLocation(this.event.id);
   },
   computed: {
     formattedStartDate() {
@@ -143,11 +179,6 @@ export default {
       return new Date(this.event.dateHeureFin).toLocaleString('fr-FR', options);
     },
   },
-  beforeDestroy() {
-    if (this.map) {
-      this.map.remove();
-    }
-  }
 };
 </script>
 
@@ -204,7 +235,4 @@ export default {
   color: #888;
 }
 
-#event-map {
-  z-index: 0;
-}
 </style>
