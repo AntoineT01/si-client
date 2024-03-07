@@ -39,7 +39,6 @@
 
 <script>
 import EventDetailConnected from './EventDetailConnected.vue';
-import axios from 'axios';
 
 export default {
   name: 'EventCardConnected',

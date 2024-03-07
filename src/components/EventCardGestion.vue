@@ -2,7 +2,7 @@
   <div class="event-card">
     <!-- En-tête de la carte -->
     <div class="event-header" v-if="!showDetails">
-      <h3 class="event-title">{{ event.title }}</h3>
+      <h3 class="event-title">{{ event.titre }}</h3>
       <p>Date de début : {{ formattedStartDate }}</p>
       <p class="event-description">{{ event.description }}</p>
       <button @click="toggleDetails">Détails</button>
@@ -11,7 +11,7 @@
     </div>
     <!-- Détails de l'événement -->
     <div v-if="showDetails" class="event-detail-container">
-      <EventDetail :event="event" />
+      <EventDetailGestion :event="event" />
       <button @click="toggleDetails" class="close-detail-btn">✕</button>
       <button @click="$emit('deleteEvent', event.id)">Supprimer</button>
       <button @click="$emit('editEvent', event)">Modifier</button>
@@ -20,30 +20,33 @@
 </template>
 
 <script>
-import EventDetail from './EventDetailGestion.vue';
+import EventDetailGestion from './EventDetailGestion.vue';
 
 export default {
   name: 'EventCardGestion',
   components: {
-    EventDetail,
+    EventDetailGestion,
   },
   props: {
-    event: Object,
+    event: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       showDetails: false,
     };
   },
-  methods: {
-    toggleDetails() {
-      this.showDetails = !this.showDetails;
-    },
-  },
   computed: {
     formattedStartDate() {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-      return new Date(this.event.startDate).toLocaleString('fr-FR', options);
+      return new Date(this.event.dateHeureDebut).toLocaleString('fr-FR', options);
+    },
+  },
+  methods: {
+    toggleDetails() {
+      this.showDetails = !this.showDetails;
     },
   },
 };

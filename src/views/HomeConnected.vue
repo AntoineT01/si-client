@@ -23,7 +23,6 @@ import Footer from "../components/Footer.vue";
 import Commentaires from "../components/Commentaire.vue";
 import Membres from "../components/Membres.vue";
 import ListeLieux from "../components/Lieux.vue";
-import Evenement from "../components/Evenement.vue";
 import axios from 'axios';
 
 export default {
@@ -35,7 +34,6 @@ export default {
     EventCardConnected,
     Commentaires,
     Membres,
-    Evenement,
   },
 
   mounted() {
