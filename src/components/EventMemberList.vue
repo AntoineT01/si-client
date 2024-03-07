@@ -2,7 +2,7 @@
   <div class="event-member-list">
     <h3>Événements Inscrits</h3>
     <ul>
-      <li v-for="event in memberEvents" :key="event.id">
+      <li v-for="event in events" :key="event.id">
         {{ event.nom }} - {{ formatDate(event.dateHeureDebut ) }} - {{ event.lieu }}
         <button @click="unsubscribeFromEvent(event.id)">Se désinscrire</button>
       </li>
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'EventMemberList',
   props: {
@@ -18,20 +19,21 @@ export default {
   },
   data() {
     return {
-      // Données fictives pour illustration
-      events: [
-        { id: 1, nom: 'Conférence Tech', dateHeureDebut: '2024-05-20T09:00', lieu: 'Salle A', participants: [1, 2] },
-        { id: 2, nom: 'Atelier DevOps', dateHeureDebut: '2024-06-15T14:00', lieu: 'Salle B', participants: [1] },
-        // Ajouter plus d'événements comme nécessaire
-      ]
+      events: [] // Initialisez events comme un tableau vide
     };
   },
-  computed: {
-    memberEvents() {
-      return this.events.filter(event => event.participants.includes(this.memberId));
-    }
+  created() {
+    this.fetchEvents(); // Appelez fetchEvents lorsque le composant est créé
   },
   methods: {
+    async fetchEvents() {
+      try {
+        const response = await axios.get(`http://localhost:8085/events/${this.memberId}/membres`);
+        this.events = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des événements', error);
+      }
+    },
     unsubscribeFromEvent(eventId) {
       console.log('Se désinscrire de l\'événement', eventId);
       this.$emit('unsubscribe', { memberId: this.memberId, eventId: eventId });

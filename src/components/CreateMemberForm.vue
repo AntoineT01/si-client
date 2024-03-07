@@ -31,7 +31,7 @@
 
       <div class="form-field">
         <label for="memberEmail">Email</label>
-        <input id="memberEmail" type="email" v-model="memberData.email" required>
+        <input id="memberEmail" type="email" v-model="memberData.mail" required>
       </div>
 
 
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'CreateMemberForm',
   data() {
@@ -51,16 +52,24 @@ export default {
         prenom: '',
         dateNaissance: '',
         adresse: '',
-        email: '',
+        mail: '',
         motDePasse: '',
       },
     };
   },
+
+
   methods: {
-    createMember() {
-      // Logique pour soumettre les données du formulaire à votre backend
-      console.log('Formulaire soumis', this.memberData);
-      // Ici, vous feriez généralement un appel API pour créer un nouveau membre
+    async createMember() {
+      try {
+        console.log('Création du membre', this.memberData);
+        const response = await axios.post('http://localhost:8085/membres', this.memberData);
+        console.log('Inscription réussie', response.data);
+        this.$emit('memberCreated');
+        // Vous pouvez également rediriger l'utilisateur vers une autre page ici
+      } catch (error) {
+        console.error('Erreur lors de l\'inscription', error);
+      }
     }
   }
 };

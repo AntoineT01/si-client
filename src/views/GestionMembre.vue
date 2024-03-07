@@ -28,6 +28,7 @@ import MembreCard from "../components/MemberCard.vue";
 import CreateMemberForm from "../components/CreateMemberForm.vue";
 import EditMemberForm from "../components/EditMemberForm.vue";
 import Footer from '../components/Footer.vue';
+import axios from 'axios';
 
 
 export default {
@@ -41,18 +42,21 @@ export default {
   },
   data() {
     return {
-      members: [
-        // Ici, vous devriez charger les données des membres depuis votre backend ou BDD
-        {id: 1, nom: 'Doe', prenom: 'John', dateNaissance: '1980-01-01', adresse: '123 Rue Principale', email: 'john.doe@example.com', motDePasse: 'password123'},
-        {id: 2, nom: 'Smith', prenom: 'Jane', dateNaissance: '1990-02-02', adresse: '456 Rue Secondaire', email: 'jane.smith@example.com', motDePasse: 'password456'},
-        // Plus de membres ici...
-      ],
+      members: [],
       showCreateMemberForm: false,
       showEditMemberForm: false,
       selectedMember: null,
     };
   },
   methods: {
+    async fetchMembers() { // Ajoutez le mot-clé async
+      try {
+        const response = await axios.get('http://localhost:8085/membres');
+        this.members = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des membres', error);
+      }
+    },
     CreateMemberForm() {
       this.showEditMemberForm = false;
       this.showCreateMemberForm = true;
@@ -63,10 +67,13 @@ export default {
       this.showEditMemberForm = true;
 
     },
-    deleteMember(memberId) {
-      // Logique pour supprimer le membre
-      this.showEditMemberForm = false;
-      this.members = this.members.filter(member => member.id !== memberId);
+    async deleteMember(memberId) {
+      try {
+        await axios.delete(`http://localhost:8085/membres/${memberId}`);
+        this.members = this.members.filter(member => member.id !== memberId);
+      } catch (error) {
+        console.error('Erreur lors de la suppression du membre', error);
+      }
     },
     saveMember(member) {
       // Logique pour sauvegarder le membre dans la BDD
@@ -78,6 +85,10 @@ export default {
       this.showEditMemberForm = false;
     },
   },
+  created() {
+    this.fetchMembers();
+  },
+
 };
 </script>
 

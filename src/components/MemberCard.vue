@@ -3,7 +3,7 @@
     <h3>{{ member.prenom }} {{ member.nom }}</h3>
     <p>Date de naissance: {{ member.dateNaissance }}</p>
     <p>Adresse: {{ member.adresse }}</p>
-    <p>Email: {{ member.email }}</p>
+    <p>Email: {{ member.mail }}</p>
     <button @click="$emit('editMember', member)">Modifier</button>
     <button @click="$emit('deleteMember', member.id)">Supprimer</button>
     <EventMemberList :memberId="member.id" />
@@ -12,7 +12,8 @@
 
 <script>
 import EventMemberList from './EventMemberList.vue';
-
+import axios from 'axios';
+console.log(EventMemberList);
 export default {
   name: 'MembreCard',
   components: {
