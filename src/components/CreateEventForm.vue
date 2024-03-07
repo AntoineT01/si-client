@@ -66,7 +66,14 @@ export default {
       // Appeler l'API pour ajouter l'événement
       try {
         console.log('Envoi des données:', this.eventData);
-        await axios.post(url, this.eventData);
+        const requestBody = {
+          titre: this.eventData.titre,
+          dateHeureDebut: this.eventData.dateHeureDebut,
+          dateHeureFin: this.eventData.dateHeureFin,
+          description: this.eventData.description,
+          lieuId: this.eventData.lieu.id
+        }
+        await axios.post(url, requestBody);
         alert('Votre événement a été ajouté.');
 
         // Émettez un événement pour informer le composant parent que l'événement a été ajouté
