@@ -8,7 +8,8 @@
       </div>
       <p class="event-description">{{ event.description }}</p>
       <button @click="toggleDetails" class="event-detail-btn">Détails</button>
-      <button @click="showConfirmationDialog = true" class="event-register-btn">S'inscrire</button>
+      <button v-if="!isUserRegistered" @click="showConfirmationDialog = true" class="event-register-btn">S'inscrire</button>
+      <button v-if="isUserRegistered" @click="unregisterFromEvent" class="event-register-btn">Désinscrire</button>
 
     </div>
 
@@ -18,8 +19,8 @@
       <EventDetailConnected :event="event" />
       <button @click="toggleDetails" class="close-detail-btn">✕</button>
 
-      <button @click="showConfirmationDialog = true" class="event-register-btn">S'inscrire</button>
-      <!-- Bouton de fermeture des détails -->
+      <button v-if="isUserRegistered" @click="showConfirmationDialog = true" class="event-register-btn">S'inscrire</button>
+      <button v-if="!isUserRegistered" @click="unregisterFromEvent" class="event-register-btn">Désinscrire</button>
 
     </div>
 
@@ -39,6 +40,7 @@
 
 <script>
 import EventDetailConnected from './EventDetailConnected.vue';
+import axios from "axios";
 
 export default {
   name: 'EventCardConnected',
@@ -53,9 +55,13 @@ export default {
   },
   data() {
     return {
+      isUserRegistered: false, // Ajoutez cette ligne pour gérer l'état d'inscription
       showDetails: false,
       showConfirmationDialog: false,
     };
+  },
+  mounted() {
+    this.checkUserRegistration(); // Vérifiez l'inscription lors du chargement du composant
   },
   computed: {
     formattedStartDate() {
@@ -64,53 +70,107 @@ export default {
     },
   },
   methods: {
+    async checkUserRegistration() {
+      const userId = localStorage.getItem('membreId');
+      if (!userId) {
+        console.log('Utilisateur non connecté');
+        return;
+      }
+      const eventUrl = `http://localhost:8085/events/${this.event.id}/membres`;
+
+      try {
+        const response = await axios.get(eventUrl);
+        // Si erreur 404 pas de membres inscrit
+        if (response.status === 404) {
+          console.log('Aucun membre inscrit à l\'événement');
+          this.isUserRegistered = false;
+          return;
+        }
+        const membres = response.data; // Assumons que cela renvoie un tableau d'objets membre
+        console.log('Membres inscrits à l\'événement :\n', membres)
+        this.isUserRegistered = membres.some(membre => membre.id.toString() === userId);
+        console.log(`Vérification de l'inscription: ${this.isUserRegistered ? 'Inscrit' : 'Non inscrit'}`);
+      } catch (error) {
+        console.error("Erreur lors de la vérification de l'inscription :", error);
+      }
+    },
+    async removeUserFromEvent(eventId) {
+      const userId = localStorage.getItem('membreId');
+      if (!userId) {
+        alert('Veuillez vous connecter pour vous désinscrire de cet événement.');
+        return;
+      }
+
+      const eventUrl = `http://localhost:8085/events/${eventId}/membres/${userId}`;
+
+      try {
+        await axios.delete(eventUrl);
+        alert('Vous êtes désinscrit de cet événement.');
+        this.isUserRegistered = false; // Mettre à jour l'état d'inscription
+        console.log(`Désinscription de l'événement ${eventId} pour l'utilisateur ${userId}`);
+      } catch (error) {
+        console.error("Erreur API lors de la désinscription :", error);
+      }
+    },
+    unregisterFromEvent() {
+      this.removeUserFromEvent(this.event.id);
+    },
     toggleDetails() {
       this.showDetails = !this.showDetails;
     },
-    // async addUserToEvent(eventId) {
-    //   // Récupérer l'ID de l'utilisateur connecté
-    //   const userId = localStorage.getItem('membreId');
-    //
-    //   // Vérifier si l'utilisateur est connecté
-    //   if (!userId) {
-    //     alert('Veuillez vous connecter pour vous inscrire à cet événement.');
-    //     return;
-    //   }
-    //   // Préparer l'URL de l'API pour récupérer les détails du membre
-    //   const userUrl = `http://localhost:8085/membres/${userId}`;
-    //
-    //   // Récupérer les détails du membre
-    //   let user;
-    //   try {
-    //     const response = await axios.get(userUrl);
-    //     user = response.data;
-    //     console.log('Détails du membre :', user);
-    //   } catch (error) {
-    //     console.error("Erreur API :", error);
-    //     alert('Une erreur est survenue lors de la récupération des détails du membre.');
-    //     return;
-    //   }
-    //
-    //   // Préparer l'URL de l'API
-    //   const eventUrl = `http://localhost:8085/events/${eventId}/membres`;
-    //
-    //   // Préparer les données de la requête
-    //   const requestData = {
-    //     user: user,
-    //   };
-    //
-    //   // Appeler l'API pour ajouter l'utilisateur à l'événement
-    //   try {
-    //     await axios.put(eventUrl, requestData);
-    //     alert('Vous êtes inscrit à cet événement.');
-    //   } catch (error) {
-    //     console.error("Erreur API :", error);
-    //     alert('Une erreur est survenue lors de l\'inscription à l\'événement.');
-    //   }
-    // },
+    async addUserToEvent(eventId) {
+      // Récupérer l'ID de l'utilisateur connecté
+      const userId = localStorage.getItem('membreId');
+      console.log("userId", userId)
+      console.log("")
+      console.log("eventId", eventId)
+
+
+      // Vérifier si l'utilisateur est connecté
+      if (!userId) {
+        alert('Veuillez vous connecter pour vous inscrire à cet événement.');
+        return;
+      }
+      // Préparer l'URL de l'API pour récupérer les détails du membre
+      const userUrl = `http://localhost:8085/membres/${userId}`;
+
+      // Récupérer les détails du membre
+      let user;
+      try {
+        const response = await axios.get(userUrl);
+        user = response.data;
+        console.log('Détails du membre :', user);
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors de la récupération des détails du membre.');
+        return;
+      }
+
+      // Préparer l'URL de l'API
+      const eventUrl = `http://localhost:8085/events/${eventId}/membres`;
+
+      console.log("eventUrl", eventUrl)
+
+      console.log("")
+      console.log("user", user)
+
+      // Préparer les données de la requête
+      const requestData = {
+        id: user.id,
+      };
+
+      // Appeler l'API pour ajouter l'utilisateur à l'événement
+      try {
+        await axios.put(eventUrl, requestData);
+        alert('Vous êtes inscrit à cet événement.');
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors de l\'inscription à l\'événement.');
+      }
+    },
 
     registerForEvent() {
-      // this.addUserToEvent(this.event.id);
+      this.addUserToEvent(this.event.id);
       this.showConfirmationDialog = false;
     },
     cancelRegistration() {
