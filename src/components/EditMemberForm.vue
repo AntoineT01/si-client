@@ -31,9 +31,8 @@
 
       <div class="form-field">
         <label for="memberEmail">Email</label>
-        <input id="memberEmail" type="email" v-model="memberData.email" required>
+        <input id="memberEmail" type="email" v-model="memberData.mail" required>
       </div>
-
 
 
       <button type="submit">Modifier</button>
@@ -42,6 +41,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'EditMemberForm',
   props: {
@@ -63,10 +63,16 @@ export default {
     };
   },
   methods: {
+    async updateMember() {
+      try {
+        await axios.put(`http://localhost:8085/membres/${this.memberData.id}`, this.memberData);
+        this.$emit('memberUpdated', this.memberData);
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour du membre', error);
+      }
+    },
     submitForm() {
-      // Logique pour soumettre les données du formulaire à votre backend
-      console.log('Formulaire soumis', this.memberData);
-      // Ici, vous feriez généralement un appel API pour enregistrer les données du membre
+      this.updateMember();
     }
   }
 };
@@ -106,6 +112,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
 }
+
 .close-form-button {
   position: absolute;
   top: 10px;
