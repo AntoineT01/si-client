@@ -77,9 +77,33 @@ export default {
       const options = {year: 'numeric', month: 'long', day: 'numeric'};
       return new Date(date).toLocaleString('fr-FR', options);
     },
-    postComment() {
-      console.log("Commentaire posté :", this.newCommentText);
-      this.newCommentText = '';
+    async postComment() {
+      // Retrieve the connected user's ID from localStorage
+      const membreId = localStorage.getItem('membreId');
+      console.log(membreId);
+
+      // Prepare the API URL
+      const url = `http://localhost:8085/commentaire`;
+
+      // Prepare the request data
+      const requestData = {
+        evenementId: this.event.id,
+        auteurId: membreId,
+        texte: this.newCommentText,
+
+      };
+
+      // Call the API to add the new comment
+      try {
+        console.log(requestData);
+        console.log(url);
+        await axios.post(url, requestData);
+        alert('Votre commentaire a été ajouté.');
+        this.newCommentText = ''; // Clear the input field
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors de l\'ajout du commentaire.');
+      }
     },
 
 
@@ -98,6 +122,7 @@ export default {
           })
           .then(commentairesAvecAuteurs => {
             this.commentaires = commentairesAvecAuteurs;
+            console.log(commentairesAvecAuteurs);
           })
           .catch(error => {
             console.error(error);
