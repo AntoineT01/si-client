@@ -9,8 +9,7 @@
     <!-- Formulaire de création d'événement -->
     <CreateEventForm v-if="showFormCreate" @closeForm="closeForm" @saveEvent="saveEvent" :lieux="lieux"/>
     <!-- Formulaire d'édition d'événement -->
-    <EditEventForm v-if="showFormEdit" @closeForm="closeForm" @saveEvent="saveEvent" :event="selectedEvent"
-                   :lieux="lieux"/>
+    <EditEventForm v-if="showFormEdit" @closeForm="closeForm" @saveEvent="saveEvent" :event="selectedEvent" :lieux="lieux"/>
 
     <section class="events">
       <h2>Événements</h2>
@@ -81,10 +80,9 @@ export default {
       this.showFormCreate = true;
     },
     editEvenement(event) {
-      this.showFormCreate = false;
-      this.selectedEvent = event;
+      this.showFormEdit = false;
+      this.selectedEvent = Object.assign({}, event);
       this.showFormEdit = true;
-      // Logique pour éditer l'événement
     },
     removeEvent(eventId) {
       this.events = this.events.filter(event => event.id !== eventId);

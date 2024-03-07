@@ -15,7 +15,6 @@
       <EventDetailGestion :event="event" />
       <button @click="toggleDetails" class="close-detail-btn">✕</button>
       <button @click="deleteEvent(event.id)">Supprimer</button>
-      console.log('event.id', event.id);
       <button @click="$emit('editEvent', event)">Modifier</button>
     </div>
   </div>
@@ -69,9 +68,7 @@ export default {
       }
     },
   },
-  created() {
-    this.fetchEvenements();
-  },
+
 
 };
 </script>

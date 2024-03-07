@@ -6,17 +6,17 @@
 
       <div class="form-field">
         <label for="eventTitle">Titre de l'événement</label>
-        <input id="eventTitle" type="text" v-model="eventData.title" required>
+        <input id="eventTitle" type="text" v-model="eventData.titre" required>
       </div>
 
       <div class="form-field">
         <label for="startDate">Date de début</label>
-        <input id="startDate" type="datetime-local" v-model="eventData.startDate" required>
+        <input id="startDate" type="datetime-local" v-model="eventData.dateHeureDebut" required>
       </div>
 
       <div class="form-field">
         <label for="endDate">Date de fin</label>
-        <input id="endDate" type="datetime-local" v-model="eventData.endDate" required>
+        <input id="endDate" type="datetime-local" v-model="eventData.dateHeureFin" required>
       </div>
 
       <div class="form-field">
@@ -25,15 +25,10 @@
       </div>
 
       <div class="form-field">
-        <label for="maxParticipants">Nombre maximum de participants</label>
-        <input id="maxParticipants" type="number" v-model="eventData.maxParticipants" required>
-      </div>
-
-      <div class="form-field">
-        <label for="location">Lieu</label>
-        <select id="location" v-model="eventData.location" required>
-          <option v-for="location in locations" :key="location.id" :value="location.name">
-            {{ location.name + ' - ' + location.adresse + ' - ' + location.capaciteAccueil + ' places'}}
+        <label for="lieux">Lieu</label>
+        <select id="lieux" v-model="eventData.lieu" required>
+          <option v-for="lieu in lieux" :key="lieu.id" :value="lieu">
+            {{ lieu.nom + ' - ' + lieu.adresse + ' - ' + lieu.capaciteAccueil + ' places'}}
           </option>
         </select>
       </div>
@@ -44,45 +39,76 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: 'EditEventForm',
   props: {
     event: {
       type: Object,
-      default: () => ({
-        title: '',
-        startDate: '',
-        endDate: '',
-        description: '',
-        maxParticipants: 0,
-        location: ''
-      })
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      eventData: this.event, // Utilisez les données de l'événement passé en prop pour initialiser les données du formulaire
-      locations: [] // Vous devez remplir ce tableau avec les données de vos lieux depuis la BDD
+      eventData: {
+        titre: '',
+        dateHeureDebut: '',
+        dateHeureFin: '',
+        description: '',
+        lieu: null
+      },
+      lieux: [] // Vous devez remplir ce tableau avec les données de vos lieux depuis la BDD
     };
   },
-  mounted() {
-    // Ici, vous pourriez charger vos données de lieux depuis votre backend ou BDD
-    this.loadLocations();
+  async mounted() {
+    await this.loadEvent();
+    await this.loadLocations();
   },
   methods: {
-    submitForm() {
-      // Logique pour soumettre les données du formulaire à votre backend
-      console.log('Formulaire soumis', this.eventData);
-      // Ici, vous feriez généralement un appel API pour enregistrer les données
+    async loadLocations() {
+      // Préparez l'URL de l'API
+      const url = `http://localhost:8085/lieux`;
+
+      // Appeler l'API pour obtenir la liste des lieux
+      try {
+        const response = await axios.get(url);
+        this.lieux = response.data;
+        console.log('Lieux:', this.lieux);
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors du chargement des lieux.');
+      }
     },
-    loadLocations() {
-      // Exemple de chargement de données des lieux
-      this.locations = [
-        // Les données réelles devraient venir de votre backend ou BDD
-        { id: 1, name: 'Salle A' , adresse: '20 Av. Victor le Gorgeu, 29200 Brest', capaciteAccueil: 100},
-        { id: 2, name: 'Salle B', adresse: '30 Av. Victor le Gorgeu, 29200 Brest', capaciteAccueil: 50 },
-        { id: 3, name: 'Salle C', adresse: '40 Av. Victor le Gorgeu, 29200 Brest', capaciteAccueil: 150 }
-      ];
+    async loadEvent() {
+      if (this.event.id) {
+        const url = `http://localhost:8085/events/${this.event.id}`;
+        try {
+          const response = await axios.get(url);
+          this.eventData = response.data;
+          this.eventData.lieu = this.event.lieu; // Ajoutez cette ligne
+        } catch (error) {
+          console.error("Erreur API :", error);
+          alert('Une erreur est survenue lors du chargement de l\'événement.');
+        }
+      } else {
+        console.error("L'ID de l'événement n'est pas défini.");
+      }
+    },
+    async submitForm() {
+      if (this.event.id) {
+        const url = `http://localhost:8085/events/${this.event.id}`;
+        try {
+          await axios.put(url, this.eventData);
+          alert('Votre événement a été modifié.');
+          this.$emit('eventUpdated');
+          this.$emit('closeForm'); // Ajoutez cette ligne
+        } catch (error) {
+          console.error("Erreur API :", error);
+          alert('Une erreur est survenue lors de la modification de l\'événement.');
+        }
+      } else {
+        console.error("L'ID de l'événement n'est pas défini.");
+      }
     }
   }
 };
