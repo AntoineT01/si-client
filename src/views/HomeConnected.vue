@@ -20,56 +20,68 @@
 import NavbarConnected from '../components/NavbarConnected.vue';
 import EventCardConnected from '../components/EventCardConnected.vue';
 import Footer from "../components/Footer.vue";
+import Commentaires from "../components/Commentaire.vue";
+import Membres from "../components/Membres.vue";
+import ListeLieux from "../components/Lieux.vue";
+import Evenement from "../components/Evenement.vue";
+import axios from 'axios';
 
 export default {
-  name: 'HomeConnected',
+  name: 'Home',
   components: {
     Footer,
+    ListeLieux,
     NavbarConnected,
     EventCardConnected,
+    Commentaires,
+    Membres,
+    Evenement,
+  },
+
+  mounted() {
+    if (!localStorage.getItem('membreId')) {
+      this.$router.push('/');
+    }
   },
   data() {
     return {
-      events: [
-        {
-          id: 1,
-          nom: "Conférence sur l'innovation technologique",
-          dateHeureDebut: "2024-05-20T09:00",
-          dateHeureFin: "2024-05-20T17:00",
-          description: "Une journée complète dédiée aux dernières tendances et innovations dans le secteur tech.",
-          maxParticipant: 100,
-          location: "20 Av. Victor le Gorgeu, 29200 Brest",
-          participants: [
-            { id: 1, nom: 'Doe', prenom: 'John' },
-            { id: 2, nom: 'Smith', prenom: 'Jane' },
-            // Plus de participants ici...
-          ],
-        },
-        // Ajoutez d'autres événements fictifs ici
-        {
-          id: 2,
-          nom: "Séminaire sur le développement durable",
-          dateHeureDebut: "2024-06-15T09:00",
-          dateHeureFin: "2024-06-15T17:00",
-          description: "Une journée complète dédiée aux dernières tendances et innovations dans le secteur tech.",
-          maxParticipant: 50,
-          location: "30 Av. Victor le Gorgeu, 29200 Brest",
-          participants: [
-            { id: 3, nom: 'Doe', prenom: 'John' },
-            { id: 4, nom: 'Smith', prenom: 'Jane' },
-            // Plus de participants ici...
-          ],
-        },
+      events: [],
 
-
-
-      ],
     };
   },
+  methods: {
+    // ...
+    fetchEvenements() {
+      axios.get('http://localhost:8085/events')
+          .then(response => {
+            console.log(response.data);
+            const events = response.data;
+            return Promise.all(events.map(evenement => {
+              return axios.get(`http://localhost:8085/lieux/${evenement.lieuId}`)
+                  .then(response => {
+                    evenement.lieu = response.data;
+                    return evenement;
+                  });
+            }));
+          })
+          .then(evenementsAvecLieux => {
+            this.events = evenementsAvecLieux;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    },
+  },
+  created() {
+    this.fetchEvenements();
+  },
+
 };
 </script>
 
 <style scoped>
+/* Ajoutez ou modifiez le CSS ici pour styliser vos sections supplémentaires */
+
 
 .events {
   padding: 20px;
