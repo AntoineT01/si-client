@@ -9,8 +9,7 @@
     <!-- Formulaire de création de membre -->
     <CreateMemberForm v-if="showCreateMemberForm" @closeForm="closeForm" @saveMember="saveMember"
                       :member="selectedMember"/>
-    <EditMemberForm v-if="showEditMemberForm" @closeForm="closeForm" @saveMember="saveMember" :member="selectedMember"/>
-    <!-- Liste des membres -->
+    <EditMemberForm v-if="showEditMemberForm" @closeForm="closeForm" @saveMember="saveMember" @memberUpdated="fetchMembers; closeForm" :member="selectedMember"/>    <!-- Liste des membres -->
     <section class="members">
       <h2>Liste des Membres</h2>
       <div class="member-list">
@@ -49,7 +48,7 @@ export default {
     };
   },
   methods: {
-    async fetchMembers() { // Ajoutez le mot-clé async
+    async fetchMembers() {
       try {
         const response = await axios.get('http://localhost:8085/membres');
         this.members = response.data;
@@ -81,6 +80,7 @@ export default {
       this.closeForm();
     },
     closeForm() {
+      console.log('Fermer le formulaire');
       this.showCreateMemberForm = false;
       this.showEditMemberForm = false;
     },

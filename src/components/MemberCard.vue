@@ -12,7 +12,6 @@
 
 <script>
 import EventMemberList from './EventMemberList.vue';
-import axios from 'axios';
 console.log(EventMemberList);
 export default {
   name: 'MembreCard',
