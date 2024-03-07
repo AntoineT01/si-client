@@ -62,9 +62,14 @@ export default {
         console.error(`Erreur lors de la récupération du nom du lieu ${venueId}`, error);
       }
     },
-    unsubscribeFromEvent(eventId) {
-      console.log('Se désinscrire de l\'événement', eventId);
-      this.$emit('unsubscribe', { memberId: this.memberId, eventId: eventId });
+    async unsubscribeFromEvent(eventId) {
+      try {
+        await axios.delete(`http://localhost:8085/events/${eventId}/membres/${this.memberId}`);
+        this.events = this.events.filter(event => event.id !== eventId);
+        this.$emit('unsubscribe', { memberId: this.memberId, eventId: eventId });
+      } catch (error) {
+        console.error(`Erreur lors de la désinscription de l'événement ${eventId}`, error);
+      }
     },
     formatDate(value) {
       const date = new Date(value);
