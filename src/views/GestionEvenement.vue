@@ -3,13 +3,11 @@
   <div class="gestionEvenement">
     <h1>Gestion des Événements</h1>
     <div class="add-event-button" v-if="!showFormCreate ">
-      <button @click="showCreateEventForm">Ajouter un Événement</button>
-    </div>
+      <button @click="showCreateEventForm" class="event-add-btn">Ajouter un événement</button>    </div>
+
 
     <!-- Formulaire de création d'événement -->
-    <CreateEventForm v-if="showFormCreate" @closeForm="closeForm" @saveEvent="saveEvent" :event="selectedEvent"
-                     :lieux="lieux"/>
-
+    <CreateEventForm v-if="showFormCreate" @closeForm="closeForm" @saveEvent="saveEvent" :lieux="lieux"/>
     <!-- Formulaire d'édition d'événement -->
     <EditEventForm v-if="showFormEdit" @closeForm="closeForm" @saveEvent="saveEvent" :event="selectedEvent"
                    :lieux="lieux"/>
