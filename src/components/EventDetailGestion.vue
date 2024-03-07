@@ -236,6 +236,7 @@ export default {
       this.showModificationDialog = false;
       this.commentToModify = null;
     },
+
   },
   created() {
     this.fetchComments(this.event.id);

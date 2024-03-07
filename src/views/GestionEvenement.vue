@@ -15,7 +15,7 @@
     <section class="events">
       <h2>Événements</h2>
       <div class="event-list">
-        <EventCardGestion v-for="event in events" :key="event.id" :event="event" @deleteEvent="deleteEvenement"
+        <EventCardGestion v-for="event in events" :key="event.id" :event="event" @eventDeleted="removeEvent"
                           @editEvent="editEvenement(event)"/>
       </div>
     </section>
@@ -86,9 +86,8 @@ export default {
       this.showFormEdit = true;
       // Logique pour éditer l'événement
     },
-    deleteEvenement(eventId) {
+    removeEvent(eventId) {
       this.events = this.events.filter(event => event.id !== eventId);
-      // Logique pour supprimer l'événement
     },
     saveEvent(event) {
       // Logique pour sauvegarder l'événement dans la BDD

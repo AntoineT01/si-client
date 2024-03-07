@@ -6,14 +6,16 @@
       <p>Date de début : {{ formattedStartDate }}</p>
       <p class="event-description">{{ event.description }}</p>
       <button @click="toggleDetails">Détails</button>
-      <button @click="$emit('deleteEvent', event.id)">Supprimer</button>
+      <button @click="deleteEvent(event.id)">Supprimer l'événement</button>
+
       <button @click="$emit('editEvent', event)">Modifier</button>
     </div>
     <!-- Détails de l'événement -->
     <div v-if="showDetails" class="event-detail-container">
       <EventDetailGestion :event="event" />
       <button @click="toggleDetails" class="close-detail-btn">✕</button>
-      <button @click="$emit('deleteEvent', event.id)">Supprimer</button>
+      <button @click="deleteEvent(event.id)">Supprimer</button>
+      console.log('event.id', event.id);
       <button @click="$emit('editEvent', event)">Modifier</button>
     </div>
   </div>
@@ -21,6 +23,7 @@
 
 <script>
 import EventDetailGestion from './EventDetailGestion.vue';
+import axios from 'axios';
 
 export default {
   name: 'EventCardGestion',
@@ -48,7 +51,28 @@ export default {
     toggleDetails() {
       this.showDetails = !this.showDetails;
     },
+    async deleteEvent(eventId) {
+      // Préparez l'URL de l'API
+      const url = `http://localhost:8085/events/${eventId}`;
+      console.log('url', url);
+
+      // Appeler l'API pour supprimer l'événement
+      try {
+        await axios.delete(url);
+        alert('L\'événement a été supprimé.');
+
+        // Vous pouvez ici rafraîchir la liste des événements ou rediriger l'utilisateur
+        this.$emit('eventDeleted', eventId);
+      } catch (error) {
+        console.error("Erreur API :", error);
+        alert('Une erreur est survenue lors de la suppression de l\'événement.');
+      }
+    },
   },
+  created() {
+    this.fetchEvenements();
+  },
+
 };
 </script>
 <style scoped>
