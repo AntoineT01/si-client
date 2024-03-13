@@ -98,7 +98,6 @@ export default {
       if (this.event.id) {
         const url = `http://localhost:8085/events/${this.event.id}`;
         try {
-          console.log('Envoi des données:\n', this.eventData);
           // Afficher la requete
           let requestBody = {
             titre: this.eventData.titre,
@@ -107,7 +106,8 @@ export default {
             description: this.eventData.description,
             lieuId: this.eventData.lieu.id
           }
-          await axios.put(url, requestBody);
+          console.log('Envoi des données:\n', requestBody);
+          // await axios.put(url, requestBody);
 
           alert('Votre événement a été modifié.');
           this.$emit('eventUpdated');
